@@ -46,3 +46,15 @@ enum class EstadosAuxiliares(val txt: String) {
     AUX2(txt = "aux2"),
     AUX3(txt = "aux3"),
 }
+
+/**
+ * Función de extensión para EstadosAuxiliares que procesa un mensaje
+ * según el estado actual
+ */
+fun EstadosAuxiliares.procesarMensaje(mensaje: String): String {
+    return when (this) {
+        EstadosAuxiliares.AUX1 -> mensaje
+        EstadosAuxiliares.AUX2 -> mensaje.lowercase()
+        EstadosAuxiliares.AUX3 -> mensaje.uppercase()
+    }
+}

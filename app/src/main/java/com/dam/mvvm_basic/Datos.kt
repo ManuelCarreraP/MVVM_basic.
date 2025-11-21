@@ -24,6 +24,7 @@ enum class Colores(val color: Color, val color_suave: Color = Color.Transparent,
     CLASE_START(color = Color.Magenta, color_suave = Color.Red, txt = "Start")
 }
 
+
 /**
  * Estados del juego
  * INICIO: estado inicial

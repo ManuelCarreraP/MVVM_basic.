@@ -57,6 +57,7 @@ class MyViewModel(): ViewModel() {
     /**
      * Inicia la cuenta atrás
      */
+
     private fun iniciarCuentaAtras() {
         cuentaAtrasActiva = true
         viewModelScope.launch {

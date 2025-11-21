@@ -38,4 +38,4 @@ En el estado AUX2 devolverá la string en minúsculas
 En el estado AUX3 devolverá la string en mayúscula
 En la función estadosAuxiliares(msg: String = ""):
 
-El logcat (mensaje (corutina))debe usar lo que devuelve las funciones de los estados para imprimir el mensaje (msg)
+El logcat (mensaje (corutina))debe usar lo que devuelve las funciones de los estados para imprimir el mensaje (msg) 

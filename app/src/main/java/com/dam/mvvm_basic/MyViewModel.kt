@@ -7,7 +7,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class MyViewModel(): ViewModel() {
+class MyViewModel private constructor() : ViewModel() {
+
+    companion object {
+        // Singleton instance
+        private var instance: MyViewModel? = null
+
+        fun getInstance(): MyViewModel {
+            return instance ?: synchronized(this) {
+                instance ?: MyViewModel().also { instance = it }
+            }
+        }
+    }
 
     // etiqueta para logcat
     private val TAG_LOG = "miDebug"
@@ -89,5 +100,12 @@ class MyViewModel(): ViewModel() {
             Log.d(TAG_LOG, "mensaje (corutina): ${msg}")
             delay(1500)
         }
+    }
+
+    /**
+     * Función para limpiar el singleton
+     */
+    fun clearInstance() {
+        instance = null
     }
 }

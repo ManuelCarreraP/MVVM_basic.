@@ -35,12 +35,29 @@ fun IU(miViewModel: MyViewModel) {
     // para que sea mas facil la etiqueta del log
     // val TAG_LOG = "miDebug"
 
+    // Estado para mostrar la cuenta atrás
+    var textoCuentaAtras by remember { mutableStateOf("") }
+
+    // Observamos los cambios en la cuenta atrás del ViewModel
+    val cuentaAtrasState = miViewModel.cuentaAtras.collectAsState()
+
+    // Actualizamos el texto cuando cambia la cuenta atrás
+    LaunchedEffect(cuentaAtrasState.value) {
+        textoCuentaAtras = if (cuentaAtrasState.value > 0) cuentaAtrasState.value.toString() else ""
+    }
+
     // botones en horizontal
     Column(
         modifier= Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround)
     {
+        // Añadimos el texto de la cuenta atrás
+        Text(
+            text = textoCuentaAtras,
+            fontSize = 30.sp
+        )
+
         Column {
             Row {
                 // creo un boton rojo
@@ -82,7 +99,7 @@ fun Boton(miViewModel: MyViewModel, enum_color: Colores) {
         onClick = {
             Log.d(TAG_LOG, "Dentro del boton: ${enum_color.ordinal}")
             miViewModel.comprobar(enum_color.ordinal)
-                  },
+        },
         modifier = Modifier
             .size((80).dp, (40).dp)
     ) {

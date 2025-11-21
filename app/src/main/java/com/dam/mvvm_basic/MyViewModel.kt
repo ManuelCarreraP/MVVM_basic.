@@ -21,6 +21,12 @@ class MyViewModel(): ViewModel() {
     // usamos mutable, ya que la queremos modificar
     var _numbers = MutableStateFlow(0)
 
+    // Flujo para la cuenta atrás
+    val cuentaAtras = MutableStateFlow(0)
+
+    // Variable para controlar si la cuenta atrás está activa
+    private var cuentaAtrasActiva = false
+
     // inicializamos variables cuando instanciamos
     init {
         // estado inicial
@@ -36,6 +42,9 @@ class MyViewModel(): ViewModel() {
         _numbers.value = (0..3).random()
         Log.d(TAG_LOG, "creamos random ${_numbers.value} - Estado: ${estadoActual.value}")
         actualizarNumero(_numbers.value)
+
+        // Iniciamos la cuenta atrás
+        iniciarCuentaAtras()
     }
 
     fun actualizarNumero(numero: Int) {
@@ -46,26 +55,50 @@ class MyViewModel(): ViewModel() {
     }
 
     /**
+     * Inicia la cuenta atrás
+     */
+    private fun iniciarCuentaAtras() {
+        cuentaAtrasActiva = true
+        viewModelScope.launch {
+            // Empezamos desde 5
+            cuentaAtras.value = 5
+            estadosAuxiliares("Cuenta atrás iniciada")
+
+            // Si la cuenta atrás llega a 1 y no se acertó, volvemos al INICIO
+            if (cuentaAtrasActiva && cuentaAtras.value == 1) {
+                Log.d(TAG_LOG, "Tiempo agotado - Volviendo al INICIO")
+                estadoActual.value = Estados.INICIO
+                cuentaAtrasActiva = false
+                cuentaAtras.value = 0
+            }
+        }
+    }
+
+    /**
      * comprobar si el boton pulsado es el correcto
      * @param ordinal: Int numero de boton pulsado
      * @return Boolean si coincide TRUE, si no FALSE
      */
     fun comprobar(ordinal: Int): Boolean {
         Log.d(TAG_LOG, "comprobamos - Estado: ${estadoActual.value}")
-        return if (ordinal == Datos.numero) {
+
+        // Detenemos la cuenta atrás si se acertó
+        if (ordinal == Datos.numero) {
+            cuentaAtrasActiva = false
+            cuentaAtras.value = 0
             Log.d(TAG_LOG, "es correcto")
             estadoActual.value = Estados.INICIO
             Log.d(TAG_LOG, "GANAMOS - Estado: ${estadoActual.value}")
             //lanzamos estados auxiliares en paralelo
             estadosAuxiliares("Ganador")
-            true
+            return true
         } else {
             Log.d(TAG_LOG, "no es correcto")
             estadoActual.value = Estados.ADIVINANDO
             Log.d(TAG_LOG, "otro intento - Estado: ${estadoActual.value}")
             //lanzamos estados auxiliares en paralelo
             estadosAuxiliares("Fallo")
-            false
+            return false
         }
     }
 
@@ -79,15 +112,40 @@ class MyViewModel(): ViewModel() {
             var estadoAux = EstadosAuxiliares.AUX1
             Log.d(TAG_LOG, "estado (corutina): ${estadoAux}")
             Log.d(TAG_LOG, "mensaje (corutina): ${msg}")
-            delay(1500)
+            cuentaAtras.value = 5
+            delay(1000)
+
             estadoAux = EstadosAuxiliares.AUX2
             Log.d(TAG_LOG, "estado (corutina): ${estadoAux}")
             Log.d(TAG_LOG, "mensaje (corutina): ${msg}")
-            delay(1500)
+            cuentaAtras.value = 4
+            delay(1000)
+
             estadoAux = EstadosAuxiliares.AUX3
             Log.d(TAG_LOG, "estado (corutina): ${estadoAux}")
             Log.d(TAG_LOG, "mensaje (corutina): ${msg}")
-            delay(1500)
+            cuentaAtras.value = 3
+            delay(1000)
+
+            estadoAux = EstadosAuxiliares.AUX4
+            Log.d(TAG_LOG, "estado (corutina): ${estadoAux}")
+            Log.d(TAG_LOG, "mensaje (corutina): ${msg}")
+            cuentaAtras.value = 2
+            delay(1000)
+
+            estadoAux = EstadosAuxiliares.AUX5
+            Log.d(TAG_LOG, "estado (corutina): ${estadoAux}")
+            Log.d(TAG_LOG, "mensaje (corutina): ${msg}")
+            cuentaAtras.value = 1
+            delay(1000)
+
+            // Si la cuenta atrás sigue activa después de llegar a 1, volvemos al INICIO
+            if (cuentaAtrasActiva) {
+                Log.d(TAG_LOG, "Cuenta atrás finalizada - Volviendo al INICIO")
+                estadoActual.value = Estados.INICIO
+                cuentaAtrasActiva = false
+                cuentaAtras.value = 0
+            }
         }
     }
 }

@@ -80,6 +80,7 @@ class MyViewModel private constructor() : ViewModel() {
         }
     }
 
+
     /**
      * Corutina que lanza estados auxiliares
      */
